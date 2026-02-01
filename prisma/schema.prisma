@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// DONNÉES STUDIO GHIBLI (depuis l'API)
+// ============================================
+
+model Film {
+  id            String  @id @default(uuid())
+  ghibliId      String  @unique // ID de l'API Ghibli
+  title         String
+  originalTitle String  @map("original_title")
+  description   String  @db.Text
+  director      String
+  producer      String
+  releaseDate   String  @map("release_date")
+  runningTime   String  @map("running_time")
+  rtScore       String  @map("rt_score")
+  image         String?
+
+  // Relations
+  people      Person[]
+  favorites   Favorite[]
+  reviews     Review[]
+  collections CollectionFilm[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("films")
+}
+
+model Person {
+  id        String  @id @default(uuid())
+  ghibliId  String  @unique // ID de l'API Ghibli
+  name      String
+  gender    String?
+  age       String?
+  eyeColor  String? @map("eye_color")
+  hairColor String? @map("hair_color")
+
+  // Relations
+  films Film[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("people")
+}
+
+// ============================================
+// GESTION UTILISATEURS
+// ============================================
+
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  password      String
+  image         String?
+  role          Role      @default(USER)
+
+  // Relations
+  favorites   Favorite[]
+  reviews     Review[]
+  collections Collection[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// ============================================
+// FONCTIONNALITÉS UTILISATEUR
+// ============================================
+
+model Favorite {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+  filmId String @map("film_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  film Film @relation(fields: [filmId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, filmId])
+  @@map("favorites")
+}
+
+model Review {
+  id      String  @id @default(uuid())
+  userId  String  @map("user_id")
+  filmId  String  @map("film_id")
+  rating  Int // Note sur 10
+  comment String? @db.Text
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  film Film @relation(fields: [filmId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, filmId])
+  @@map("reviews")
+}
+
+model Collection {
+  id          String  @id @default(uuid())
+  userId      String  @map("user_id")
+  name        String
+  description String? @db.Text
+
+  user  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  films CollectionFilm[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("collections")
+}
+
+model CollectionFilm {
+  id           String @id @default(uuid())
+  collectionId String @map("collection_id")
+  filmId       String @map("film_id")
+
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  film       Film       @relation(fields: [filmId], references: [id], onDelete: Cascade)
+
+  addedAt DateTime @default(now()) @map("added_at")
+
+  @@unique([collectionId, filmId])
+  @@map("collection_films")
+}
