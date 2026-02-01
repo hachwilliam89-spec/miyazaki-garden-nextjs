@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import PersonCard from '@/components/films/PersonCard'
+import { prisma } from '@/lib/prisma'
 
 interface Person {
     id: string
@@ -26,16 +27,27 @@ interface Film {
 }
 
 async function getFilm(id: string) {
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3003'}/api/films/${id}`,
-        { cache: 'no-store' }
-    )
+    const film = await prisma.film.findUnique({
+        where: { id },
+        include: {
+            people: {
+                select: {
+                    id: true,
+                    name: true,
+                    gender: true,
+                    age: true,
+                    eyeColor: true,
+                    hairColor: true,
+                },
+            },
+        },
+    })
 
-    if (!res.ok) {
+    if (!film) {
         throw new Error('Film not found')
     }
 
-    return res.json()
+    return film
 }
 
 export default async function FilmDetailPage({
@@ -44,8 +56,7 @@ export default async function FilmDetailPage({
     params: Promise<{ id: string }>
 }) {
     const { id } = await params
-    const data = await getFilm(id)
-    const film: Film = data.film
+    const film = await getFilm(id)
 
     return (
         <main className="min-h-screen bg-gradient-to-b from-amber-50 via-red-50 to-amber-100">
