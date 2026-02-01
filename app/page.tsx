@@ -1,4 +1,5 @@
 import FilmCard from '@/components/films/FilmCard'
+import { prisma } from '@/lib/prisma'
 
 interface Film {
   id: string
@@ -15,20 +16,31 @@ interface Film {
 }
 
 async function getFilms() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3003'}/api/films?limit=100`, {
-    cache: 'no-store',
+  const films = await prisma.film.findMany({
+    take: 100,
+    orderBy: {
+      releaseDate: 'desc',
+    },
+    select: {
+      id: true,
+      ghibliId: true,
+      title: true,
+      originalTitle: true,
+      description: true,
+      director: true,
+      producer: true,
+      releaseDate: true,
+      runningTime: true,
+      rtScore: true,
+      image: true,
+    },
   })
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch films')
-  }
-
-  return res.json()
+  return films
 }
 
 export default async function Home() {
-  const data = await getFilms()
-  const films: Film[] = data.films
+  const films = await getFilms()
 
   return (
       <main className="min-h-screen bg-gradient-to-b from-amber-50 via-red-50 to-amber-100">
