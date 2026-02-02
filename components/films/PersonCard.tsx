@@ -1,51 +1,55 @@
 interface PersonCardProps {
-    name: string
-    gender: string | null
-    age: string | null
-    eyeColor: string | null
-    hairColor: string | null
+  name: string
+  gender: string | null
+  age: string | null
+  eyeColor: string | null
+  hairColor: string | null
 }
 
 export default function PersonCard({
-                                       name,
-                                       gender,
-                                       age,
-                                       eyeColor,
-                                       hairColor,
-                                   }: PersonCardProps) {
-    return (
-        <div className="bg-white rounded-lg p-4 shadow-md border-2 border-amber-100 hover:border-red-300 transition-colors">
-            <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-400 to-amber-400 rounded-full flex items-center justify-center text-white text-xl font-bold">
-                    {name.charAt(0)}
-                </div>
-                <div>
-                    <h3 className="font-bold text-gray-900">{name}</h3>
-                    {gender && (
-                        <p className="text-sm text-gray-600">
-                            {gender === 'Male' ? '👨' : gender === 'Female' ? '👩' : '⚪'} {gender}
-                        </p>
-                    )}
-                </div>
-            </div>
+  name,
+  gender,
+  age,
+  eyeColor,
+  hairColor,
+}: PersonCardProps) {
+  // Emoji basé sur le genre
+  const getEmoji = () => {
+    if (!gender) return '👤'
+    const g = gender.toLowerCase()
+    if (g === 'female' || g === 'f') return '👩'
+    if (g === 'male' || g === 'm') return '👨'
+    return '👤'
+  }
 
-            <div className="space-y-1 text-sm text-gray-600">
-                {age && (
-                    <p>
-                        <span className="font-semibold">Âge:</span> {age}
-                    </p>
-                )}
-                {eyeColor && (
-                    <p>
-                        <span className="font-semibold">Yeux:</span> {eyeColor}
-                    </p>
-                )}
-                {hairColor && (
-                    <p>
-                        <span className="font-semibold">Cheveux:</span> {hairColor}
-                    </p>
-                )}
-            </div>
+  return (
+    <div className="flex items-start gap-4 p-4 bg-[#F8F6F0] rounded-lg border border-[#4A9B8C]/10 hover:border-[#4A9B8C]/30 transition-colors">
+      {/* Avatar */}
+      <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-[#A8D5BA] to-[#B8E6D0] flex items-center justify-center text-2xl">
+        {getEmoji()}
+      </div>
+      
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <h3 className="font-semibold text-[#1D3A2F] truncate">{name}</h3>
+        <div className="flex flex-wrap gap-2 mt-2">
+          {age && age !== 'NA' && age !== 'Unknown' && (
+            <span className="meta-tag text-xs">
+              {age} ans
+            </span>
+          )}
+          {eyeColor && eyeColor !== 'NA' && eyeColor !== 'Unknown' && (
+            <span className="meta-tag text-xs">
+              👁️ {eyeColor}
+            </span>
+          )}
+          {hairColor && hairColor !== 'NA' && hairColor !== 'Unknown' && (
+            <span className="meta-tag text-xs">
+              💇 {hairColor}
+            </span>
+          )}
         </div>
-    )
+      </div>
+    </div>
+  )
 }
