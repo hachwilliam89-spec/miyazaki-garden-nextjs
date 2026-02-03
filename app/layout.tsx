@@ -1,29 +1,36 @@
 import type { Metadata } from 'next'
-import { Playfair_Display, Source_Sans_3, Noto_Serif_JP } from 'next/font/google'
+import { Playfair_Display, Source_Sans_3, Noto_Serif_JP, Caveat } from 'next/font/google'
 import './globals.css'
 
 const playfair = Playfair_Display({
-  variable: '--font-playfair',
+  variable: '--font-display',
   subsets: ['latin'],
   display: 'swap',
 })
 
+const caveat = Caveat({
+  variable: '--font-script',
+  subsets: ['latin'],
+  weight: ['500', '600'],
+  display: 'swap',
+})
+
 const sourceSans = Source_Sans_3({
-  variable: '--font-source-sans',
+  variable: '--font-body',
   subsets: ['latin'],
   display: 'swap',
 })
 
 const notoSerifJP = Noto_Serif_JP({
-  variable: '--font-noto-serif-jp',
+  variable: '--font-japanese',
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
+  weight: ['400', '600'],
   display: 'swap',
 })
 
 export const metadata: Metadata = {
   title: 'Miyazaki Garden | Studio Ghibli Films',
-  description: 'Explorez l\'univers magique et poétique du Studio Ghibli à travers sa filmographie complète. Une encyclopédie interactive des films de Hayao Miyazaki.',
+  description: 'Explorez l\'univers magique et poétique du Studio Ghibli à travers sa filmographie complète.',
   keywords: ['Studio Ghibli', 'Miyazaki', 'anime', 'films japonais', 'Totoro', 'Chihiro'],
   authors: [{ name: 'Kim', url: 'https://portfolio-kim-liart.vercel.app' }],
   openGraph: {
@@ -35,17 +42,17 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+                                     children,
+                                   }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr">
+      <html lang="fr">
       <body
-        className={`${playfair.variable} ${sourceSans.variable} ${notoSerifJP.variable} antialiased`}
+          className={`${playfair.variable} ${caveat.variable} ${sourceSans.variable} ${notoSerifJP.variable} antialiased`}
       >
-        {children}
+      {children}
       </body>
-    </html>
+      </html>
   )
 }

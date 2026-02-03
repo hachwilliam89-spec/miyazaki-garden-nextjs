@@ -1,15 +1,15 @@
-import { Noto_Serif_JP, Playfair_Display, Satisfy, Source_Sans_3 } from 'next/font/google'
+import { Noto_Serif_JP, Cormorant_Garamond, Caveat, Source_Sans_3 } from 'next/font/google'
 
-export const playfair = Playfair_Display({
+export const cormorant = Cormorant_Garamond({
     subsets: ['latin'],
     variable: '--font-display',
-    weight: ['400', '600', '700']  // ← Ajouté
+    weight: ['400', '600', '700']
 })
 
-export const satisfy = Satisfy({
+export const caveat = Caveat({
     subsets: ['latin'],
     variable: '--font-script',
-    weight: '400'  // ← OBLIGATOIRE pour Satisfy
+    weight: ['500', '600']
 })
 
 export const sourceSans = Source_Sans_3({
@@ -19,6 +19,6 @@ export const sourceSans = Source_Sans_3({
 
 export const notoSerifJP = Noto_Serif_JP({
     subsets: ['latin'],
-    weight: ['400','600','700'],
+    weight: ['400', '600'],
     variable: '--font-japanese'
 })
