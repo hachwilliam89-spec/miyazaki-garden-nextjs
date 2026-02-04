@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import PersonCard from '@/components/films/PersonCard'
 
 interface Person {
   id: string
@@ -12,20 +11,6 @@ interface Person {
   age: string | null
   eyeColor: string | null
   hairColor: string | null
-}
-
-interface Film {
-  id: string
-  title: string
-  originalTitle: string
-  description: string
-  director: string
-  producer: string
-  releaseDate: string
-  runningTime: string
-  rtScore: string
-  image: string | null
-  people: Person[]
 }
 
 async function getFilm(id: string) {
@@ -61,132 +46,179 @@ export default async function FilmDetailPage({
   const film = await getFilm(id)
 
   return (
-    <div className="min-h-screen flex flex-col bg-cream">
+    <div className="min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex-1">
-        {/* Hero Banner */}
-        <div className="relative h-64 md:h-80 bg-header-gradient overflow-hidden">
-          {/* Background Pattern */}
-          <div 
-            className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q35 15 30 25 Q25 15 30 5' fill='none' stroke='white' stroke-width='0.5'/%3E%3C/svg%3E")`,
-            }}
-          />
-          
-          <div className="container mx-auto px-4 h-full flex flex-col justify-end pb-8 relative z-10">
-            {/* Back Link */}
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-[#7DD4C3] hover:text-white transition-colors mb-4 text-sm"
-            >
-              <span>←</span>
-              <span>Retour aux films</span>
-            </Link>
-            
-            {/* Title */}
-            <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2">
-              {film.title}
-            </h1>
-            <p className="font-japanese text-lg md:text-xl text-[#7DD4C3]">
-              {film.originalTitle}
-            </p>
-          </div>
+      <main className="flex-1 relative">
+        {/* ══════════════════════════════════════════
+            FOND : Poster flouté
+        ══════════════════════════════════════════ */}
+        <div className="fixed inset-0 -z-10">
+          {film.image && (
+            <Image
+              src={film.image}
+              alt=""
+              fill
+              className="object-cover blur-2xl scale-125 opacity-60"
+              priority
+            />
+          )}
+          {/* Overlay gradient pour lisibilité */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white/30" />
         </div>
 
-        {/* Content */}
-        <div className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column: Image */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-24">
-                {/* Film Poster */}
-                <div className="relative aspect-[2/3] rounded-xl overflow-hidden shadow-ghibli-lg border-b-4 border-[#4A9B8C]">
-                  {film.image ? (
-                    <Image
-                      src={film.image}
-                      alt={film.title}
-                      fill
-                      className="object-cover"
-                      priority
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full bg-gradient-to-br from-[#A8D5BA] to-[#B8E6D0]">
-                      <span className="text-9xl">🎬</span>
-                    </div>
-                  )}
-                </div>
+        {/* ══════════════════════════════════════════
+            CONTENU
+        ══════════════════════════════════════════ */}
+        <div className="relative z-10 px-4 py-8 max-w-5xl mx-auto">
+          
+          {/* Retour */}
+          <Link
+              href="/films"
+              className="inline-flex items-center gap-2 text-[#2D5A27]/70 hover:text-[#2D5A27] transition-colors mb-8 text-sm group"
+          >
+            <span className="group-hover:-translate-x-1 transition-transform">←</span>
+            <span>Retour à la collection</span>
+          </Link>
 
-                {/* Score Card */}
-                <div className="mt-6 bg-white rounded-xl p-6 shadow-ghibli border border-[#4A9B8C]/10">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#2C4A5E] font-semibold">Note Rotten Tomatoes</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[#D4A84B] text-xl">✦</span>
-                      <span className="text-3xl font-bold text-[#2D5A47]">
-                        {film.rtScore}
-                      </span>
+          {/* ══════════════════════════════════════════
+              SECTION MUSÉALE : Poster + Cartel
+          ══════════════════════════════════════════ */}
+          <section className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-xl border border-white/50 mb-8">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
+              
+              {/* POSTER (Tableau encadré) */}
+              <div className="w-full md:w-2/5 flex-shrink-0">
+                <div className="relative group">
+                  {/* Ombre portée "accroché au mur" */}
+                  <div className="absolute -bottom-4 left-4 right-4 h-8 bg-black/20 blur-xl rounded-full" />
+                  
+                  {/* Cadre doré */}
+                  <div className="relative bg-gradient-to-br from-[#D4A84B] via-[#C9975A] to-[#D4A84B] p-2 rounded-lg shadow-2xl">
+                    <div className="relative aspect-[2/3] rounded overflow-hidden">
+                      {film.image ? (
+                        <Image
+                          src={film.image}
+                          alt={film.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                          priority
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full bg-gradient-to-br from-[#A8D5BA] to-[#B8E6D0]">
+                          <span className="text-8xl">🎬</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* CARTEL (Panneau d'information) */}
+              <div className="flex-1">
+                {/* Cartel principal */}
+                <div className="bg-[#FDFBF5] border-l-4 border-[#D4A84B] p-6 rounded-r-lg shadow-md mb-6">
+                  <h1 className="font-display text-3xl md:text-4xl font-bold text-[#2D5A27] mb-2">
+                    {film.title}
+                  </h1>
+                  <p className="font-japanese text-xl text-[#4A7C34] mb-4">
+                    {film.originalTitle}
+                  </p>
+                  
+                  {/* Ligne d'infos style musée */}
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-[#2D5A27]/70">
+                    <span className="flex items-center gap-1.5 bg-[#2D5A27]/10 px-3 py-1 rounded-full">
+                      <span className="text-[#D4A84B]">✦</span>
+                      <span className="font-semibold">{film.rtScore}/100</span>
+                    </span>
+                    <span className="bg-[#2D5A27]/10 px-3 py-1 rounded-full">{film.releaseDate}</span>
+                    <span className="bg-[#2D5A27]/10 px-3 py-1 rounded-full">{film.runningTime} min</span>
+                  </div>
+                </div>
+
+                {/* Infos techniques */}
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-white/60 backdrop-blur p-4 rounded-lg border border-[#2D5A27]/10">
+                    <p className="text-xs uppercase tracking-wider text-[#4A7C34]/60 mb-1">Réalisateur</p>
+                    <p className="font-semibold text-[#2D5A27]">{film.director}</p>
+                  </div>
+                  <div className="bg-white/60 backdrop-blur p-4 rounded-lg border border-[#2D5A27]/10">
+                    <p className="text-xs uppercase tracking-wider text-[#4A7C34]/60 mb-1">Producteur</p>
+                    <p className="font-semibold text-[#2D5A27]">{film.producer}</p>
+                  </div>
+                </div>
+
+                {/* Note muséale */}
+                <p className="text-xs text-[#2D5A27]/50 italic">
+                  Collection Studio Ghibli • Œuvre d&apos;animation japonaise
+                </p>
               </div>
             </div>
+          </section>
 
-            {/* Right Column: Info */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Info Card */}
-              <div className="bg-white rounded-xl p-6 shadow-ghibli border border-[#4A9B8C]/10">
-                <h2 className="section-title mb-6">Informations</h2>
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <p className="text-sm text-[#4A9B8C] mb-1">Réalisateur</p>
-                    <p className="font-semibold text-[#1D3A2F]">{film.director}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#4A9B8C] mb-1">Producteur</p>
-                    <p className="font-semibold text-[#1D3A2F]">{film.producer}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#4A9B8C] mb-1">Année de sortie</p>
-                    <p className="font-semibold text-[#1D3A2F]">{film.releaseDate}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#4A9B8C] mb-1">Durée</p>
-                    <p className="font-semibold text-[#1D3A2F]">{film.runningTime} minutes</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Synopsis Card */}
-              <div className="bg-white rounded-xl p-6 shadow-ghibli border border-[#4A9B8C]/10">
-                <h2 className="section-title mb-4">Synopsis</h2>
-                <p className="text-[#2C4A5E] leading-relaxed">{film.description}</p>
-              </div>
-
-              {/* Characters Card */}
-              {film.people.length > 0 && (
-                <div className="bg-white rounded-xl p-6 shadow-ghibli border border-[#4A9B8C]/10">
-                  <div className="flex items-center gap-3 mb-6">
-                    <h2 className="section-title">Personnages</h2>
-                    <span className="meta-tag">{film.people.length}</span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {film.people.map((person) => (
-                      <PersonCard
-                        key={person.id}
-                        name={person.name}
-                        gender={person.gender}
-                        age={person.age}
-                        eyeColor={person.eyeColor}
-                        hairColor={person.hairColor}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+          {/* ══════════════════════════════════════════
+              À PROPOS DE L'ŒUVRE (Synopsis)
+          ══════════════════════════════════════════ */}
+          <section className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-xl border border-white/50 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-1 h-8 bg-[#D4A84B] rounded-full" />
+              <h2 className="font-display text-2xl font-semibold text-[#2D5A27]">
+                À propos de l&apos;œuvre
+              </h2>
             </div>
-          </div>
+            <p className="text-[#2D5A27]/80 leading-relaxed text-lg max-w-3xl">
+              {film.description}
+            </p>
+          </section>
+
+          {/* ══════════════════════════════════════════
+              GALERIE DE PORTRAITS (Personnages)
+          ══════════════════════════════════════════ */}
+          {film.people.length > 0 && (
+            <section className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-xl border border-white/50">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-1 h-8 bg-[#D4A84B] rounded-full" />
+                <h2 className="font-display text-2xl font-semibold text-[#2D5A27]">
+                  Galerie de portraits
+                </h2>
+                <span className="bg-[#2D5A27]/10 text-[#2D5A27] text-sm px-3 py-1 rounded-full">
+                  {film.people.length} personnages
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                {film.people.map((person) => (
+                  <div 
+                    key={person.id}
+                    className="group text-center"
+                  >
+                    {/* Médaillon portrait */}
+                    <div className="relative mx-auto w-20 h-20 mb-3">
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#D4A84B] via-[#C9975A] to-[#D4A84B] rounded-full p-0.5">
+                        <div className="w-full h-full bg-gradient-to-br from-[#A8D5BA] to-[#7CB69A] rounded-full flex items-center justify-center">
+                          <span className="text-2xl">
+                            {person.gender === 'Female' ? '👩' : person.gender === 'Male' ? '👨' : '🧑'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Nom */}
+                    <h3 className="font-semibold text-[#2D5A27] text-sm mb-1 group-hover:text-[#4A7C34] transition-colors">
+                      {person.name}
+                    </h3>
+                    
+                    {/* Détails */}
+                    <div className="text-xs text-[#2D5A27]/50 space-y-0.5">
+                      {person.age && <p>{person.age}</p>}
+                      {person.eyeColor && <p>Yeux {person.eyeColor}</p>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
         </div>
       </main>
 
