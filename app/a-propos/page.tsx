@@ -127,8 +127,8 @@ export default function AboutPage() {
                     <div className="text-center mb-20">
                         <div className="inline-flex items-center gap-4 mb-8">
                             <span className="w-2 h-12 bg-gradient-to-b from-[#D4A84B] to-[#C9975A]" />
-                            <h2 className="section-title">Les Trois Génies</h2>
-                            <span className="font-japanese text-lg">巨匠三人</span>
+                            <h2 className="section-title"> Les REALISATEURS </h2>
+                            <span className="font-japanese text-lg">実在者 </span>
                         </div>
                         <p className="text-[#2D5A27]/70 max-w-2xl mx-auto">Les âmes derrière la magie Ghibli</p>
                     </div>
@@ -145,25 +145,7 @@ export default function AboutPage() {
                         ))}
                     </div>
                 </section>
-                {/* PHILOSOPHIE GHIBLI */}
-                <section className="section-glass py-20 px-4 max-w-4xl mx-auto mb-24">
-                    <div className="space-y-12">
-                        {[
-                            { title: "Nature Vivante", jp: "生きている自然", desc: "Chaque feuille, chaque goutte d'eau, chaque brin d'herbe possède une âme." },
-                            { title: "Enfance Éternelle", jp: "永遠の子供時代", desc: "L'émerveillement de l'enfance face au monde, même adulte." },
-                            { title: "Équilibre Fragile", jp: "儚いバランス", desc: "L'harmonie précaire entre technologie et nature, progrès et traditions." }
-                        ].map((pillar, index) => (
-                            <motion.div key={pillar.title} initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: index * 0.1 }} className="flex items-start gap-6 p-8 rounded-3xl bg-white/50 hover:bg-white/70 transition-all group">
-                                <div className="w-2 h-12 bg-gradient-to-b from-[#D4A84B] to-[#C9975A] flex-shrink-0 mt-2" />
-                                <div>
-                                    <h3 className="font-display text-2xl font-bold text-[#2D5A27] mb-3 group-hover:text-[#4A7C34]">{pillar.title}</h3>
-                                    <p className="font-japanese text-lg text-[#4A7C34] mb-4">{pillar.jp}</p>
-                                    <p className="text-[#2D5A27]/80 leading-relaxed">{pillar.desc}</p>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </section>
+
             </main>
 
             <FooterWithBack />
@@ -171,20 +153,12 @@ export default function AboutPage() {
     )
 }
 function DirectorCard({ director, index, isActive, onClick }: { director: Director, index: number, isActive: boolean, onClick: () => void }) {
-    const x = useMotionValue(0)
-    const y = useMotionValue(0)
-    const rotateX = useSpring(x, { stiffness: 10, damping: 15 })
-    const rotateY = useSpring(y, { stiffness: 10, damping: 15 })
+
 
     return (
         <motion.div
-            style={{ rotateX, rotateY, rotate: isActive ? '2deg' : '0deg' }}
-            onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect()
-                x.set((e.clientX - rect.left - rect.width / 2) / 15)
-                y.set(-(e.clientY - rect.top - rect.height / 2) / 15)
-            }}
-            onMouseLeave={() => { x.set(0); y.set(0) }}
+
+
             onClick={onClick}
             className="group relative cursor-pointer aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-xl border-2 border-white/40 hover:border-[#D4A84B]/50 hover:scale-[1.02]"
         >
@@ -202,11 +176,7 @@ function DirectorCard({ director, index, isActive, onClick }: { director: Direct
             <div className="p-6 h-1/4 flex items-center">
                 <p className="text-[#2D5A27]/80 text-sm leading-relaxed line-clamp-2 group-hover:line-clamp-none">{director.bio}</p>
             </div>
-            {isActive && (
-                <motion.div layoutId="active-badge" className="absolute -top-4 -right-4 w-20 h-20 bg-[#D4A84B] rounded-3xl flex items-center justify-center shadow-2xl">
-                    <span className="text-2xl font-bold text-white drop-shadow-lg">✦</span>
-                </motion.div>
-            )}
+
         </motion.div>
     )
 }
