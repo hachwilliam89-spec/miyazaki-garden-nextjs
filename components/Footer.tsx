@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function Footer() {
   return (
     <footer className="relative z-10">
-      {/* Wave SVG - même couleur que le footer */}
+      {/* Wave SVG */}
       <div className="h-12">
         <svg viewBox="0 0 1440 50" fill="none" preserveAspectRatio="none" className="w-full h-full">
           <path d="M0,50 C360,15 720,15 1080,35 C1260,45 1380,50 1440,50 L1440,50 L0,50 Z" fill="rgba(74, 124, 52, 0.6)"/>
@@ -29,8 +29,7 @@ export default function Footer() {
             {/* Navigation */}
             <div className="md:text-center">
               <div className="flex flex-wrap md:justify-center gap-4">
-                <Link href="/films" className="text-white/50 hover:text-white/80 text-sm transition-colors">Films</Link>
-                <Link href="/personnages" className="text-white/50 hover:text-white/80 text-sm transition-colors">Personnages</Link>
+                <Link href="/films" className="text-white/50 hover:text-white/80 text-sm transition-colors">Filmographie</Link>
                 <Link href="/a-propos" className="text-white/50 hover:text-white/80 text-sm transition-colors">À propos</Link>
               </div>
             </div>

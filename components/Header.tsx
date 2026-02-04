@@ -30,9 +30,6 @@ export default function Header() {
               <Link href="/films" className="px-4 py-2 text-sm text-[#2D5A27]/70 hover:text-[#2D5A27] hover:bg-[#2D5A27]/10 rounded-full transition-all">
                 Filmographie
               </Link>
-              <Link href="/personnages" className="px-4 py-2 text-sm text-[#2D5A27]/70 hover:text-[#2D5A27] hover:bg-[#2D5A27]/10 rounded-full transition-all">
-                Personnages
-              </Link>
               <Link href="/a-propos" className="px-4 py-2 text-sm text-[#2D5A27]/70 hover:text-[#2D5A27] hover:bg-[#2D5A27]/10 rounded-full transition-all">
                 À propos
               </Link>
@@ -67,7 +64,6 @@ export default function Header() {
             <div className="space-y-1">
               <Link href="/" className="block py-3 px-4 text-[#2D5A27]/70 hover:text-[#2D5A27] hover:bg-[#2D5A27]/5 rounded-xl transition-all" onClick={() => setIsMenuOpen(false)}>Accueil</Link>
               <Link href="/films" className="block py-3 px-4 text-[#2D5A27]/70 hover:text-[#2D5A27] hover:bg-[#2D5A27]/5 rounded-xl transition-all" onClick={() => setIsMenuOpen(false)}>Filmographie</Link>
-              <Link href="/personnages" className="block py-3 px-4 text-[#2D5A27]/70 hover:text-[#2D5A27] hover:bg-[#2D5A27]/5 rounded-xl transition-all" onClick={() => setIsMenuOpen(false)}>Personnages</Link>
               <Link href="/a-propos" className="block py-3 px-4 text-[#2D5A27]/70 hover:text-[#2D5A27] hover:bg-[#2D5A27]/5 rounded-xl transition-all" onClick={() => setIsMenuOpen(false)}>À propos</Link>
             </div>
             <div className="flex gap-3 mt-4 pt-4 border-t border-[#2D5A27]/10">
