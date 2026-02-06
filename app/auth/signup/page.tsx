@@ -1,35 +1,59 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 
-export default function SignInPage() {
+export default function SignUpPage() {
     const router = useRouter()
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    })
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError('')
+
+        if (formData.password !== formData.confirmPassword) {
+            setError('Les mots de passe ne correspondent pas')
+            return
+        }
+
         setLoading(true)
 
         try {
-            const result = await signIn('credentials', {
-                email,
-                password,
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    password: formData.password,
+                }),
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                setError(data.error || 'Erreur lors de l\'inscription')
+                return
+            }
+
+            // Connexion automatique après inscription
+            await signIn('credentials', {
+                email: formData.email,
+                password: formData.password,
                 redirect: false,
             })
 
-            if (result?.error) {
-                setError('Email ou mot de passe incorrect')
-            } else {
-                router.push('/profile')
-                router.refresh()
-            }
+            router.push('/profile')
+            router.refresh()
         } catch (error) {
             setError('Une erreur est survenue')
         } finally {
@@ -40,21 +64,35 @@ export default function SignInPage() {
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
             <div className="w-full max-w-md">
-                {/* Card avec glassmorphism */}
                 <div className="backdrop-blur-xl bg-white/70 rounded-2xl shadow-2xl border border-white/20 p-8">
                     <div className="text-center mb-8">
                         <h1 className="font-display text-3xl font-bold text-[#2D5A27] mb-2">
-                            Bienvenue
+                            Rejoignez-nous
                         </h1>
-                        <p className="text-[#4A7C34]">Connectez-vous à votre jardin Ghibli</p>
+                        <p className="text-[#4A7C34]">Créez votre jardin Ghibli personnel</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         {error && (
                             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
                                 {error}
                             </div>
                         )}
+
+                        <div>
+                            <label htmlFor="name" className="block text-sm font-medium text-[#2D5A27] mb-2">
+                                Nom
+                            </label>
+                            <input
+                                id="name"
+                                type="text"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                required
+                                className="w-full px-4 py-3 rounded-lg border border-[#A8D5BA] bg-white/50 focus:outline-none focus:ring-2 focus:ring-[#4A7C34] focus:border-transparent transition-all"
+                                placeholder="Votre nom"
+                            />
+                        </div>
 
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-[#2D5A27] mb-2">
@@ -63,8 +101,8 @@ export default function SignInPage() {
                             <input
                                 id="email"
                                 type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 required
                                 className="w-full px-4 py-3 rounded-lg border border-[#A8D5BA] bg-white/50 focus:outline-none focus:ring-2 focus:ring-[#4A7C34] focus:border-transparent transition-all"
                                 placeholder="votre@email.com"
@@ -78,9 +116,26 @@ export default function SignInPage() {
                             <input
                                 id="password"
                                 type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                 required
+                                minLength={6}
+                                className="w-full px-4 py-3 rounded-lg border border-[#A8D5BA] bg-white/50 focus:outline-none focus:ring-2 focus:ring-[#4A7C34] focus:border-transparent transition-all"
+                                placeholder="••••••••"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#2D5A27] mb-2">
+                                Confirmer le mot de passe
+                            </label>
+                            <input
+                                id="confirmPassword"
+                                type="password"
+                                value={formData.confirmPassword}
+                                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                required
+                                minLength={6}
                                 className="w-full px-4 py-3 rounded-lg border border-[#A8D5BA] bg-white/50 focus:outline-none focus:ring-2 focus:ring-[#4A7C34] focus:border-transparent transition-all"
                                 placeholder="••••••••"
                             />
@@ -91,11 +146,10 @@ export default function SignInPage() {
                             disabled={loading}
                             className="w-full bg-gradient-to-r from-[#4A7C34] to-[#2D5A27] text-white font-semibold py-3 rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {loading ? 'Connexion...' : 'Se connecter'}
+                            {loading ? 'Inscription...' : 'S\'inscrire'}
                         </button>
                     </form>
 
-                    {/* Divider */}
                     <div className="relative my-6">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-[#A8D5BA]"></div>
@@ -105,7 +159,6 @@ export default function SignInPage() {
                         </div>
                     </div>
 
-                    {/* Google Sign In */}
                     <button
                         onClick={() => signIn('google', { callbackUrl: '/profile' })}
                         className="w-full flex items-center justify-center gap-3 bg-white border border-[#A8D5BA] text-[#2D5A27] font-semibold py-3 rounded-lg hover:bg-white/80 transition-all"
@@ -120,9 +173,9 @@ export default function SignInPage() {
                     </button>
 
                     <p className="text-center text-sm text-[#4A7C34] mt-6">
-                        Pas encore de compte ?{' '}
-                        <Link href="/auth/signup" className="font-semibold text-[#2D5A27] hover:underline">
-                            S'inscrire
+                        Déjà un compte ?{' '}
+                        <Link href="/auth/signin" className="font-semibold text-[#2D5A27] hover:underline">
+                            Se connecter
                         </Link>
                     </p>
                 </div>
