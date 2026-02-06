@@ -36,7 +36,13 @@ export default function TopFilmsCarousel({ films }: TopFilmsCarouselProps) {
   }
 
   const currentFilm = films[currentIndex]
-
+  if (!currentFilm || films.length === 0) {
+    return (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Chargement des films...</p>
+        </div>
+    );
+  }
   return (
     <div className="relative">
       {/* Slide principal */}

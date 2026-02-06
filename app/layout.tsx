@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
-import { Playfair_Display, Source_Sans_3, Noto_Serif_JP, Caveat } from 'next/font/google'
+import { Inter, Playfair_Display, Source_Sans_3, Noto_Serif_JP, Caveat } from 'next/font/google'  // ← Inter ajouté ici
+import { ReactNode } from 'react'
 import './globals.css'
+import { Providers } from './providers'
 
 const playfair = Playfair_Display({
   variable: '--font-display',
@@ -28,30 +30,29 @@ const notoSerifJP = Noto_Serif_JP({
   display: 'swap',
 })
 
+const inter = Inter({  // ← Maintenant Inter est défini
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
-  title: 'Miyazaki Garden | Studio Ghibli Films',
-  description: 'Explorez l\'univers magique et poétique du Studio Ghibli à travers sa filmographie complète.',
-  keywords: ['Studio Ghibli', 'Miyazaki', 'anime', 'films japonais', 'Totoro', 'Chihiro'],
-  authors: [{ name: 'Kim', url: 'https://portfolio-kim-liart.vercel.app' }],
-  openGraph: {
-    title: 'Miyazaki Garden | Studio Ghibli Films',
-    description: 'Explorez l\'univers magique du Studio Ghibli',
-    type: 'website',
-    locale: 'fr_FR',
-  },
+  // ... votre metadata inchangée
 }
 
 export default function RootLayout({
                                      children,
                                    }: Readonly<{
-  children: React.ReactNode
+  children: ReactNode
 }>) {
   return (
       <html lang="fr">
       <body
-          className={`${playfair.variable} ${caveat.variable} ${sourceSans.variable} ${notoSerifJP.variable} antialiased`}
+          className={`${playfair.variable} ${caveat.variable} ${sourceSans.variable} ${notoSerifJP.variable} ${inter.variable} antialiased`}
       >
-      {children}
+      <Providers>
+        {children}
+      </Providers>
       </body>
       </html>
   )
