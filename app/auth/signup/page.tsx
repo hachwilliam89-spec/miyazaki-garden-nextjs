@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 export default function SignUpPage() {
     const router = useRouter()
@@ -25,6 +27,11 @@ export default function SignUpPage() {
             return
         }
 
+        if (formData.password.length < 6) {
+            setError('Le mot de passe doit contenir au moins 6 caractères')
+            return
+        }
+
         setLoading(true)
 
         try {
@@ -41,7 +48,7 @@ export default function SignUpPage() {
             const data = await response.json()
 
             if (!response.ok) {
-                setError(data.error || 'Erreur lors de l\'inscription')
+                setError(data.error || "Erreur lors de l'inscription")
                 return
             }
 
@@ -62,124 +69,136 @@ export default function SignUpPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
-            <div className="w-full max-w-md">
-                <div className="backdrop-blur-xl bg-white/70 rounded-2xl shadow-2xl border border-white/20 p-8">
-                    <div className="text-center mb-8">
-                        <h1 className="font-display text-3xl font-bold text-[#2D5A27] mb-2">
-                            Rejoignez-nous
-                        </h1>
-                        <p className="text-[#4A7C34]">Créez votre jardin Ghibli personnel</p>
-                    </div>
+        <div className="min-h-screen bg-ghibli">
+            <Header />
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-                                {error}
+            <main className="relative z-10">
+                <div className="flex items-center justify-center px-4 py-16 min-h-[70vh]">
+                    <div className="w-full max-w-md">
+                        {/* Card glassmorphism harmonisée */}
+                        <div className="section-glass p-8 md:p-10">
+                            {/* Icône décorative */}
+                            <div className="flex justify-center mb-6">
+                                <div className="w-16 h-16 bg-gradient-to-br from-[#D4A84B] to-[#C9975A] rounded-2xl flex items-center justify-center shadow-xl">
+                                    <span className="text-2xl">🌱</span>
+                                </div>
                             </div>
-                        )}
 
-                        <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-[#2D5A27] mb-2">
-                                Nom
-                            </label>
-                            <input
-                                id="name"
-                                type="text"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                required
-                                className="w-full px-4 py-3 rounded-lg border border-[#A8D5BA] bg-white/50 focus:outline-none focus:ring-2 focus:ring-[#4A7C34] focus:border-transparent transition-all"
-                                placeholder="Votre nom"
-                            />
-                        </div>
+                            <div className="text-center mb-8">
+                                <h1 className="font-display text-3xl font-bold text-[#2D5A27] mb-2">
+                                    Rejoignez-nous
+                                </h1>
+                                <p className="font-japanese text-sm text-[#4A7C34]/70">参加する</p>
+                                <p className="text-[#2D5A27]/60 mt-2 text-sm">
+                                    Créez votre jardin Ghibli personnel
+                                </p>
+                            </div>
 
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-[#2D5A27] mb-2">
-                                Email
-                            </label>
-                            <input
-                                id="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                required
-                                className="w-full px-4 py-3 rounded-lg border border-[#A8D5BA] bg-white/50 focus:outline-none focus:ring-2 focus:ring-[#4A7C34] focus:border-transparent transition-all"
-                                placeholder="votre@email.com"
-                            />
-                        </div>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                {error && (
+                                    <div className="bg-red-50/80 backdrop-blur-sm border border-red-200/50 text-red-600 px-4 py-3 rounded-xl text-sm">
+                                        {error}
+                                    </div>
+                                )}
 
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-[#2D5A27] mb-2">
-                                Mot de passe
-                            </label>
-                            <input
-                                id="password"
-                                type="password"
-                                value={formData.password}
-                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                required
-                                minLength={6}
-                                className="w-full px-4 py-3 rounded-lg border border-[#A8D5BA] bg-white/50 focus:outline-none focus:ring-2 focus:ring-[#4A7C34] focus:border-transparent transition-all"
-                                placeholder="••••••••"
-                            />
-                        </div>
+                                <div>
+                                    <label htmlFor="name" className="block text-sm font-medium text-[#2D5A27] mb-2">
+                                        Nom
+                                    </label>
+                                    <input
+                                        id="name"
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        required
+                                        className="w-full px-4 py-3 rounded-xl border border-[#2D5A27]/15 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#4A7C34]/30 focus:border-[#4A7C34]/40 transition-all text-[#2D5A27] placeholder:text-[#2D5A27]/30"
+                                        placeholder="Votre nom"
+                                    />
+                                </div>
 
-                        <div>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#2D5A27] mb-2">
-                                Confirmer le mot de passe
-                            </label>
-                            <input
-                                id="confirmPassword"
-                                type="password"
-                                value={formData.confirmPassword}
-                                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                                required
-                                minLength={6}
-                                className="w-full px-4 py-3 rounded-lg border border-[#A8D5BA] bg-white/50 focus:outline-none focus:ring-2 focus:ring-[#4A7C34] focus:border-transparent transition-all"
-                                placeholder="••••••••"
-                            />
-                        </div>
+                                <div>
+                                    <label htmlFor="email" className="block text-sm font-medium text-[#2D5A27] mb-2">
+                                        Email
+                                    </label>
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        required
+                                        className="w-full px-4 py-3 rounded-xl border border-[#2D5A27]/15 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#4A7C34]/30 focus:border-[#4A7C34]/40 transition-all text-[#2D5A27] placeholder:text-[#2D5A27]/30"
+                                        placeholder="votre@email.com"
+                                    />
+                                </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full bg-gradient-to-r from-[#4A7C34] to-[#2D5A27] text-white font-semibold py-3 rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {loading ? 'Inscription...' : 'S\'inscrire'}
-                        </button>
-                    </form>
+                                <div>
+                                    <label htmlFor="password" className="block text-sm font-medium text-[#2D5A27] mb-2">
+                                        Mot de passe
+                                    </label>
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        required
+                                        minLength={6}
+                                        className="w-full px-4 py-3 rounded-xl border border-[#2D5A27]/15 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#4A7C34]/30 focus:border-[#4A7C34]/40 transition-all text-[#2D5A27] placeholder:text-[#2D5A27]/30"
+                                        placeholder="••••••••"
+                                    />
+                                    <p className="text-xs text-[#2D5A27]/40 mt-1">Minimum 6 caractères</p>
+                                </div>
 
-                    <div className="relative my-6">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-[#A8D5BA]"></div>
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-4 bg-white/70 text-[#4A7C34]">ou</span>
+                                <div>
+                                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#2D5A27] mb-2">
+                                        Confirmer le mot de passe
+                                    </label>
+                                    <input
+                                        id="confirmPassword"
+                                        type="password"
+                                        value={formData.confirmPassword}
+                                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                        required
+                                        minLength={6}
+                                        className="w-full px-4 py-3 rounded-xl border border-[#2D5A27]/15 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#4A7C34]/30 focus:border-[#4A7C34]/40 transition-all text-[#2D5A27] placeholder:text-[#2D5A27]/30"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-full bg-[#4A7C34] text-white font-semibold py-3 rounded-full hover:bg-[#3D6A2A] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 mt-2"
+                                >
+                                    {loading ? (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Inscription...
+                                        </span>
+                                    ) : (
+                                        "S'inscrire"
+                                    )}
+                                </button>
+                            </form>
+
+                            {/* Séparateur */}
+                            <div className="flex items-center justify-center gap-4 my-6">
+                                <span className="h-px w-12 bg-gradient-to-r from-transparent to-[#4A7C34]/20" />
+                                <span className="text-[#D4A84B] text-xs">✦</span>
+                                <span className="h-px w-12 bg-gradient-to-l from-transparent to-[#4A7C34]/20" />
+                            </div>
+
+                            <p className="text-center text-sm text-[#2D5A27]/60">
+                                Déjà un compte ?{' '}
+                                <Link href="/auth/signin" className="font-semibold text-[#4A7C34] hover:text-[#2D5A27] hover:underline transition-colors">
+                                    Se connecter
+                                </Link>
+                            </p>
                         </div>
                     </div>
-
-                    <button
-                        onClick={() => signIn('google', { callbackUrl: '/profile' })}
-                        className="w-full flex items-center justify-center gap-3 bg-white border border-[#A8D5BA] text-[#2D5A27] font-semibold py-3 rounded-lg hover:bg-white/80 transition-all"
-                    >
-                        <svg className="w-5 h-5" viewBox="0 0 24 24">
-                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                        </svg>
-                        Continuer avec Google
-                    </button>
-
-                    <p className="text-center text-sm text-[#4A7C34] mt-6">
-                        Déjà un compte ?{' '}
-                        <Link href="/auth/signin" className="font-semibold text-[#2D5A27] hover:underline">
-                            Se connecter
-                        </Link>
-                    </p>
                 </div>
-            </div>
+            </main>
+
+            <Footer />
         </div>
     )
 }
