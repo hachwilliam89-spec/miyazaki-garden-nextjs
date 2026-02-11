@@ -4,15 +4,7 @@ import { prisma } from '@/lib/prisma'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FavoriteButton from '@/components/FavoriteButton'
-
-interface Person {
-  id: string
-  name: string
-  gender: string | null
-  age: string | null
-  eyeColor: string | null
-  hairColor: string | null
-}
+import ReviewSection from '@/components/ReviewSection'
 
 async function getFilm(id: string) {
   const film = await prisma.film.findUnique({
@@ -104,7 +96,7 @@ export default async function FilmDetailPage({
                       </div>
                     </div>
 
-                    {/* Bouton favori sur le poster */}
+                    {/* Bouton favori */}
                     <div className="absolute top-4 right-4 z-10">
                       <FavoriteButton filmId={film.id} size="lg" />
                     </div>
@@ -114,16 +106,12 @@ export default async function FilmDetailPage({
                 {/* Cartel */}
                 <div className="flex-1">
                   <div className="bg-[#FDFBF5] border-l-4 border-[#D4A84B] p-6 rounded-r-lg shadow-md mb-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <h1 className="font-display text-3xl md:text-4xl font-bold text-[#2D5A27] mb-2">
-                          {film.title}
-                        </h1>
-                        <p className="font-japanese text-xl text-[#4A7C34] mb-4">
-                          {film.originalTitle}
-                        </p>
-                      </div>
-                    </div>
+                    <h1 className="font-display text-3xl md:text-4xl font-bold text-[#2D5A27] mb-2">
+                      {film.title}
+                    </h1>
+                    <p className="font-japanese text-xl text-[#4A7C34] mb-4">
+                      {film.originalTitle}
+                    </p>
 
                     <div className="flex flex-wrap items-center gap-3 text-sm text-[#2D5A27]/70">
                     <span className="flex items-center gap-1.5 bg-[#2D5A27]/10 px-3 py-1 rounded-full">
@@ -168,7 +156,7 @@ export default async function FilmDetailPage({
 
             {/* Personnages */}
             {film.people.length > 0 && (
-                <section className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-xl border border-white/50">
+                <section className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-xl border border-white/50 mb-8">
                   <div className="flex items-center gap-3 mb-8">
                     <div className="w-1 h-8 bg-[#D4A84B] rounded-full" />
                     <h2 className="font-display text-2xl font-semibold text-[#2D5A27]">
@@ -208,6 +196,9 @@ export default async function FilmDetailPage({
                   </div>
                 </section>
             )}
+
+            {/* Avis des spectateurs */}
+            <ReviewSection filmId={film.id} />
 
           </div>
         </main>

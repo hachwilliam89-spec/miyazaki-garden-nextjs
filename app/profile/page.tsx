@@ -409,13 +409,13 @@ export default function ProfilePage() {
                     </section>
 
                     {/* ══════════════════════════════════════
-                        ZONE DANGER — Supprimer le compte
+                       Supprimer le compte
                     ══════════════════════════════════════ */}
                     <section className="section-glass p-8 md:p-10 border border-red-200/30">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-1 h-8 bg-red-400 rounded-full" />
                             <h2 className="font-display text-xl font-semibold text-red-600/80">
-                                Zone de danger
+                                Voulez-vous nous quitter?
                             </h2>
                         </div>
 
@@ -446,7 +446,6 @@ export default function ProfilePage() {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="text-center mb-6">
-                            <div className="text-4xl mb-3">⚠️</div>
                             <h3 className="font-display text-xl font-bold text-[#2D5A27] mb-2">
                                 Supprimer votre compte ?
                             </h3>

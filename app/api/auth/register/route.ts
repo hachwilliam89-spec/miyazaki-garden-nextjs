@@ -1,40 +1,35 @@
-import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
+import { prisma } from '@/lib/prisma'
+import { NextResponse } from 'next/server'
+import bcrypt from 'bcryptjs'
+import { registerSchema } from '@/lib/validations'
 
 export async function POST(request: Request) {
     try {
-        const { name, email, password } = await request.json();
+        const body = await request.json()
 
-        // Validation
-        if (!name || !email || !password) {
-            return NextResponse.json(
-                { error: 'Tous les champs sont requis' },
-                { status: 400 }
-            );
+        // Validation Zod
+        const result = registerSchema.safeParse(body)
+        if (!result.success) {
+            const firstError = result.error.issues[0]?.message || 'Données invalides'
+            return NextResponse.json({ error: firstError }, { status: 400 })
         }
 
-        if (password.length < 6) {
-            return NextResponse.json(
-                { error: 'Le mot de passe doit contenir au moins 6 caractères' },
-                { status: 400 }
-            );
-        }
+        const { name, email, password } = result.data
 
         // Vérifier si l'email existe déjà
         const existingUser = await prisma.user.findUnique({
             where: { email },
-        });
+        })
 
         if (existingUser) {
             return NextResponse.json(
                 { error: 'Cet email est déjà utilisé' },
                 { status: 400 }
-            );
+            )
         }
 
         // Hash du password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 12)
 
         // Créer l'utilisateur
         const user = await prisma.user.create({
@@ -43,7 +38,7 @@ export async function POST(request: Request) {
                 email,
                 password: hashedPassword,
             },
-        });
+        })
 
         return NextResponse.json({
             success: true,
@@ -52,12 +47,12 @@ export async function POST(request: Request) {
                 name: user.name,
                 email: user.email,
             },
-        });
+        })
     } catch (error) {
-        console.error('Registration error:', error);
+        console.error('Registration error:', error)
         return NextResponse.json(
-            { error: 'Erreur lors de l\'inscription' },
+            { error: "Erreur lors de l'inscription" },
             { status: 500 }
-        );
+        )
     }
 }

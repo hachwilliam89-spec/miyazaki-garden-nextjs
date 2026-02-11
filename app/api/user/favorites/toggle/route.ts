@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import { favoriteSchema } from '@/lib/validations'
 
-// POST — Toggle favori (ajouter ou retirer)
+// POST — Toggle favori
 export async function POST(request: NextRequest) {
     try {
         const session = await auth()
@@ -10,11 +11,16 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
         }
 
-        const { filmId } = await request.json()
+        const body = await request.json()
 
-        if (!filmId) {
-            return NextResponse.json({ error: 'filmId requis' }, { status: 400 })
+        // Validation Zod
+        const result = favoriteSchema.safeParse(body)
+        if (!result.success) {
+            const firstError = result.error.errors[0]?.message || 'Données invalides'
+            return NextResponse.json({ error: firstError }, { status: 400 })
         }
+
+        const { filmId } = result.data
 
         // Vérifier si le film existe
         const film = await prisma.film.findUnique({ where: { id: filmId } })
@@ -33,13 +39,11 @@ export async function POST(request: NextRequest) {
         })
 
         if (existingFavorite) {
-            // Retirer des favoris
             await prisma.favorite.delete({
                 where: { id: existingFavorite.id },
             })
             return NextResponse.json({ isFavorite: false })
         } else {
-            // Ajouter aux favoris
             await prisma.favorite.create({
                 data: {
                     userId: session.user.id,

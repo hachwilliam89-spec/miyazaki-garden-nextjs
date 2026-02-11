@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import { updateProfileSchema } from '@/lib/validations'
 
 // PATCH — Modifier nom/email
 export async function PATCH(request: Request) {
@@ -10,12 +11,16 @@ export async function PATCH(request: Request) {
             return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
         }
 
-        const { name, email } = await request.json()
+        const body = await request.json()
 
-        // Validation
-        if (!name?.trim() || !email?.trim()) {
-            return NextResponse.json({ error: 'Nom et email requis' }, { status: 400 })
+        // Validation Zod
+        const result = updateProfileSchema.safeParse(body)
+        if (!result.success) {
+            const firstError = result.error.errors[0]?.message || 'Données invalides'
+            return NextResponse.json({ error: firstError }, { status: 400 })
         }
+
+        const { name, email } = result.data
 
         // Vérifier si l'email est déjà pris par un autre utilisateur
         if (email !== session.user.email) {
@@ -29,10 +34,7 @@ export async function PATCH(request: Request) {
 
         const updatedUser = await prisma.user.update({
             where: { id: session.user.id },
-            data: {
-                name: name.trim(),
-                email: email.trim(),
-            },
+            data: { name, email },
         })
 
         return NextResponse.json({
@@ -57,7 +59,6 @@ export async function DELETE() {
             return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
         }
 
-        // Prisma cascade supprime les favoris, reviews, collections automatiquement
         await prisma.user.delete({
             where: { id: session.user.id },
         })
