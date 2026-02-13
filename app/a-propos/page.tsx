@@ -53,9 +53,6 @@ export default function AboutPage() {
                     {/* Section Studio Ghibli + Histoire */}
                     <section className="section-glass p-8 md:p-12">
                         <div className="flex flex-col md:flex-row items-center gap-6 mb-10">
-                            <div className="w-20 h-20 bg-gradient-to-br from-[#D4A84B] to-[#C9975A] rounded-2xl flex items-center justify-center shadow-xl flex-shrink-0">
-                                <span className="text-3xl">🎬</span>
-                            </div>
                             <div className="text-center md:text-left">
                                 <h1 className="font-script text-4xl md:text-5xl text-[#2D5A27] leading-tight">Studio Ghibli</h1>
                                 <p className="font-japanese text-xl text-[#4A7C34]/80">スタジオジブリ</p>

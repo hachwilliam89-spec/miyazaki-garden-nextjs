@@ -77,13 +77,6 @@ export default function SignUpPage() {
                     <div className="w-full max-w-md">
                         {/* Card glassmorphism harmonisée */}
                         <div className="section-glass p-8 md:p-10">
-                            {/* Icône décorative */}
-                            <div className="flex justify-center mb-6">
-                                <div className="w-16 h-16 bg-gradient-to-br from-[#D4A84B] to-[#C9975A] rounded-2xl flex items-center justify-center shadow-xl">
-                                    <span className="text-2xl">🌱</span>
-                                </div>
-                            </div>
-
                             <div className="text-center mb-8">
                                 <h1 className="font-display text-3xl font-bold text-[#2D5A27] mb-2">
                                     Rejoignez-nous
