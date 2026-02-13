@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
@@ -22,12 +23,31 @@ async function getFilm(id: string) {
       },
     },
   })
+  return film
+}
+
+// Metadata dynamique par film
+export async function generateMetadata({
+                                         params,
+                                       }: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const film = await getFilm(id)
 
   if (!film) {
-    throw new Error('Film not found')
+    return { title: 'Film introuvable' }
   }
 
-  return film
+  return {
+    title: `${film.title} (${film.releaseDate})`,
+    description: film.description.slice(0, 160) + '...',
+    openGraph: {
+      title: `${film.title} — Miyazaki Garden`,
+      description: film.description.slice(0, 160) + '...',
+      images: film.image ? [{ url: film.image, alt: film.title }] : [],
+    },
+  }
 }
 
 export default async function FilmDetailPage({
@@ -38,11 +58,23 @@ export default async function FilmDetailPage({
   const { id } = await params
   const film = await getFilm(id)
 
+  if (!film) {
+    return (
+        <div className="min-h-screen bg-ghibli">
+          <Header />
+          <main className="relative z-10 flex items-center justify-center min-h-[60vh]">
+            <p className="text-[#2D5A27]/60">Film introuvable</p>
+          </main>
+          <Footer />
+        </div>
+    )
+  }
+
   return (
       <div className="min-h-screen flex flex-col">
         <Header />
 
-        <main className="flex-1 relative">
+        <main id="main-content" className="flex-1 relative">
           {/* Fond : Poster flouté */}
           <div className="fixed inset-0 -z-10">
             {film.image && (
@@ -51,6 +83,7 @@ export default async function FilmDetailPage({
                     alt=""
                     fill
                     className="object-cover blur-2xl scale-125 opacity-60"
+              sizes="100vw"
                     priority
                 />
             )}
@@ -86,6 +119,7 @@ export default async function FilmDetailPage({
                                 alt={film.title}
                                 fill
                                 className="object-cover group-hover:scale-105 transition-transform duration-700"
+                          sizes="(max-width: 768px) 100vw, 40vw"
                                 priority
                             />
                         ) : (
@@ -114,10 +148,10 @@ export default async function FilmDetailPage({
                     </p>
 
                     <div className="flex flex-wrap items-center gap-3 text-sm text-[#2D5A27]/70">
-                    <span className="flex items-center gap-1.5 bg-[#2D5A27]/10 px-3 py-1 rounded-full">
-                      <span className="text-[#D4A84B]">✦</span>
-                      <span className="font-semibold">{film.rtScore}/100</span>
-                    </span>
+                                        <span className="flex items-center gap-1.5 bg-[#2D5A27]/10 px-3 py-1 rounded-full">
+                                            <span className="text-[#D4A84B]">✦</span>
+                                            <span className="font-semibold">{film.rtScore}/100</span>
+                                        </span>
                       <span className="bg-[#2D5A27]/10 px-3 py-1 rounded-full">{film.releaseDate}</span>
                       <span className="bg-[#2D5A27]/10 px-3 py-1 rounded-full">{film.runningTime} min</span>
                     </div>
@@ -163,8 +197,8 @@ export default async function FilmDetailPage({
                       Galerie de portraits
                     </h2>
                     <span className="bg-[#2D5A27]/10 text-[#2D5A27] text-sm px-3 py-1 rounded-full">
-                  {film.people.length} personnages
-                </span>
+                                    {film.people.length} personnages
+                                </span>
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
@@ -176,9 +210,9 @@ export default async function FilmDetailPage({
                           <div className="relative mx-auto w-20 h-20 mb-3">
                             <div className="absolute inset-0 bg-gradient-to-br from-[#D4A84B] via-[#C9975A] to-[#D4A84B] rounded-full p-0.5">
                               <div className="w-full h-full bg-gradient-to-br from-[#A8D5BA] to-[#7CB69A] rounded-full flex items-center justify-center">
-                          <span className="text-2xl">
-                            {person.gender === 'Female' ? '👩' : person.gender === 'Male' ? '👨' : '🧑'}
-                          </span>
+                                                    <span className="text-2xl">
+                                                        {person.gender === 'Female' ? '👩' : person.gender === 'Male' ? '👨' : '🧑'}
+                                                    </span>
                               </div>
                             </div>
                           </div>

@@ -47,7 +47,7 @@ export default function AboutPage() {
         <div className="min-h-screen bg-ghibli">
             <Header />
 
-            <main className="relative z-10">
+            <main id="main-content" className="relative z-10">
                 <div className="px-4 py-12 max-w-6xl mx-auto space-y-12">
 
                     {/* Section Studio Ghibli + Histoire */}
@@ -155,7 +155,7 @@ function DirectorCard({ director, onClick }: { director: Director, onClick: () =
                 <img
                     src={director.image}
                     alt={director.name}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -197,7 +197,7 @@ function DirectorModal({ director, onClose }: { director: Director, onClose: () 
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in" />
 
             <div
-                className="relative bg-[#FDFBF7] rounded-3xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden animate-slide-up"
+                role="dialog" aria-modal="true" className="relative bg-[#FDFBF7] rounded-3xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden animate-slide-up"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="relative h-48 bg-gradient-to-br from-[#A8D5BA] to-[#B8E6D0]">

@@ -41,7 +41,7 @@ export default async function Home() {
     <div className="min-h-screen bg-ghibli">
       <Header />
       
-      <main className="relative z-10">
+      <main id="main-content" className="relative z-10">
         <div className="px-4 py-12 max-w-6xl mx-auto space-y-12">
           
           {/* ══════════════════════════════════════════
@@ -90,47 +90,45 @@ export default async function Home() {
 
             {/* Container bandeau - PLEINE LARGEUR */}
             <div className="relative py-6 group/bandeau">
-              {/* Bandeau principal */}
-              <div className="flex animate-scroll">
-                {[...allFilms, ...allFilms].map((film, index) => (
+              {/* Wrapper unique animé */}
+              <div className="animate-scroll">
+                <div className="flex">
+                  {[...allFilms, ...allFilms].map((film, index) => (
                     <div
-                        key={`${film.id}-${index}`}
-                        className="flex-shrink-0 w-32 h-44 mx-2 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+                      key={`${film.id}-${index}`}
+                      className="flex-shrink-0 w-32 mx-2"
                     >
-                      {film.image && (
+                      {/* Affiche */}
+                      <div className="h-44 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                        {film.image && (
                           <Image
-                              src={film.image}
-                              alt={film.title}
-                              width={128}
-                              height={176}
-                              className="w-full h-full object-cover"
+                            src={film.image}
+                            alt={film.title}
+                            width={128}
+                            height={176}
+                            loading="lazy"
+                            className="w-full h-full object-cover"
                           />
-                      )}
+                        )}
+                      </div>
+                      {/* Reflet */}
+                      <div className="h-20 mt-1 opacity-30 blur-sm scale-y-[-1] overflow-hidden mask-fade-bottom">
+                        {film.image && (
+                          <Image
+                            src={film.image}
+                            alt=""
+                            width={128}
+                            height={176}
+                            className="w-full h-full object-cover object-top"
+                          />
+                        )}
+                      </div>
                     </div>
-                ))}
+                  ))}
+                </div>
               </div>
 
-              {/* Reflet flouté */}
-              <div className="flex animate-scroll mt-1 opacity-30 blur-sm scale-y-[-1] h-12 overflow-hidden">
-                {[...allFilms, ...allFilms].map((film, index) => (
-                    <div
-                        key={`reflection-${film.id}-${index}`}
-                        className="flex-shrink-0 w-32 h-44 mx-2"
-                    >
-                      {film.image && (
-                          <Image
-                              src={film.image}
-                              alt=""
-                              width={128}
-                              height={176}
-                              className="w-full h-full object-cover object-top"
-                          />
-                      )}
-                    </div>
-                ))}
-              </div>
-
-              {/* Gradient fade sur les côtés - PLEINE HAUTEUR */}
+              {/* Gradient fade sur les côtés */}
               <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#FAF8F3] to-transparent pointer-events-none z-10" />
               <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#FAF8F3] to-transparent pointer-events-none z-10" />
             </div>

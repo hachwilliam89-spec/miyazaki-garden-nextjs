@@ -163,7 +163,7 @@ export default function ProfilePage() {
         return (
             <div className="min-h-screen bg-ghibli">
                 <Header />
-                <main className="relative z-10">
+                <main id="main-content" className="relative z-10">
                     <div className="flex items-center justify-center min-h-[60vh]">
                         <div className="w-12 h-12 border-4 border-[#A8D5BA] border-t-[#4A7C34] rounded-full animate-spin" />
                     </div>
@@ -179,7 +179,7 @@ export default function ProfilePage() {
         <div className="min-h-screen bg-ghibli">
             <Header />
 
-            <main className="relative z-10">
+            <main id="main-content" className="relative z-10">
                 <div className="px-4 py-12 max-w-4xl mx-auto space-y-8">
 
                     {/* ══════════════════════════════════════
@@ -442,7 +442,7 @@ export default function ProfilePage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowDeleteModal(false)}>
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
                     <div
-                        className="relative bg-[#FDFBF7] rounded-3xl shadow-2xl max-w-md w-full p-8 animate-modal-in"
+                        role="dialog" aria-modal="true" className="relative bg-[#FDFBF7] rounded-3xl shadow-2xl max-w-md w-full p-8 animate-modal-in"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="text-center mb-6">

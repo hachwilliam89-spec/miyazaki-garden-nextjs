@@ -77,6 +77,7 @@ export default function FavoriteButton({ filmId, size = 'md' }: FavoriteButtonPr
                     ? 'bg-red-50 border-2 border-red-200 hover:bg-red-100'
                     : 'bg-white/90 backdrop-blur-sm border-2 border-[#2D5A27]/10 hover:border-red-200 hover:bg-red-50'
             } ${animating ? 'scale-125' : 'scale-100'} shadow-md hover:shadow-lg disabled:opacity-50`}
+            aria-pressed={isFavorite}
             title={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
         >
             <span className={`transition-transform duration-300 ${animating ? 'scale-110' : ''}`}>

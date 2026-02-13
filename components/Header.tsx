@@ -18,7 +18,7 @@ export default function Header() {
             {/* Logo */}
             <Link href="/" className="group flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-[#2D5A27]/10 flex items-center justify-center group-hover:bg-[#2D5A27]/20 transition-colors">
-                <span className="text-xl">🌿</span>
+                <span className="text-xl" aria-hidden="true">🌿</span>
               </div>
               <div>
                 <span className="font-script text-xl text-[#2D5A27] tracking-wide">Miyazaki-Garden</span>
@@ -27,7 +27,7 @@ export default function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center">
+            <nav className="hidden lg:flex items-center" aria-label="Navigation principale">
               <div className="flex items-center bg-[#2D5A27]/5 rounded-full px-2 py-1">
                 <Link href="/" className="px-4 py-2 text-sm text-[#2D5A27]/70 hover:text-[#2D5A27] hover:bg-[#2D5A27]/10 rounded-full transition-all">
                   Accueil

@@ -38,6 +38,10 @@ export default function ReviewSection({ filmId }: ReviewSectionProps) {
     const [submitting, setSubmitting] = useState(false)
     const [editingReview, setEditingReview] = useState<Review | null>(null)
 
+    // Modale suppression
+    const [deleteModal, setDeleteModal] = useState<string | null>(null)
+    const [deleteLoading, setDeleteLoading] = useState(false)
+
     useEffect(() => {
         fetchReviews()
     }, [filmId])
@@ -58,7 +62,6 @@ export default function ReviewSection({ filmId }: ReviewSectionProps) {
         }
     }
 
-    // Vérifier si l'utilisateur a déjà un avis
     const userReview = reviews.find(r => r.user.id === session?.user?.id)
 
     function handleEdit(review: Review) {
@@ -99,25 +102,29 @@ export default function ReviewSection({ filmId }: ReviewSectionProps) {
                 await fetchReviews()
             }
         } catch {
-            alert('Erreur lors de l\'envoi')
+            // Silencieux
         } finally {
             setSubmitting(false)
         }
     }
 
-    async function handleDelete(reviewId: string) {
-        if (!confirm('Supprimer votre avis ?')) return
+    async function handleDelete() {
+        if (!deleteModal) return
 
+        setDeleteLoading(true)
         try {
-            const res = await fetch(`/api/reviews?reviewId=${reviewId}`, {
+            const res = await fetch(`/api/reviews?reviewId=${deleteModal}`, {
                 method: 'DELETE',
             })
 
             if (res.ok) {
+                setDeleteModal(null)
                 await fetchReviews()
             }
         } catch {
-            alert('Erreur lors de la suppression')
+            // Silencieux
+        } finally {
+            setDeleteLoading(false)
         }
     }
 
@@ -145,7 +152,6 @@ export default function ReviewSection({ filmId }: ReviewSectionProps) {
                     )}
                 </div>
 
-                {/* Note moyenne */}
                 {average !== null && (
                     <div className="flex items-center gap-2 bg-[#FDFBF5] px-4 py-2 rounded-xl border border-[#D4A84B]/30">
                         <div className="flex gap-0.5">
@@ -153,6 +159,7 @@ export default function ReviewSection({ filmId }: ReviewSectionProps) {
                                 <span
                                     key={i}
                                     className={`text-sm ${i < Math.round(average) ? 'text-[#D4A84B]' : 'text-[#2D5A27]/15'}`}
+                                    aria-hidden="true"
                                 >
                                     ★
                                 </span>
@@ -197,6 +204,7 @@ export default function ReviewSection({ filmId }: ReviewSectionProps) {
                                             onClick={() => setRating(starValue)}
                                             onMouseEnter={() => setHoverRating(starValue)}
                                             onMouseLeave={() => setHoverRating(0)}
+                                            aria-label={`Note ${starValue} sur 10`}
                                             className={`text-2xl transition-all hover:scale-125 ${
                                                 starValue <= (hoverRating || rating)
                                                     ? 'text-[#D4A84B] drop-shadow-sm'
@@ -275,7 +283,6 @@ export default function ReviewSection({ filmId }: ReviewSectionProps) {
                         >
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex items-center gap-3">
-                                    {/* Avatar */}
                                     <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                                         {review.user.image ? (
                                             <img
@@ -307,13 +314,13 @@ export default function ReviewSection({ filmId }: ReviewSectionProps) {
                                     </div>
                                 </div>
 
-                                {/* Note */}
                                 <div className="flex items-center gap-1.5 flex-shrink-0">
                                     <div className="flex gap-0.5">
                                         {[...Array(10)].map((_, i) => (
                                             <span
                                                 key={i}
                                                 className={`text-xs ${i < review.rating ? 'text-[#D4A84B]' : 'text-[#2D5A27]/10'}`}
+                                                aria-hidden="true"
                                             >
                                                 ★
                                             </span>
@@ -323,14 +330,12 @@ export default function ReviewSection({ filmId }: ReviewSectionProps) {
                                 </div>
                             </div>
 
-                            {/* Commentaire */}
                             {review.comment && (
                                 <p className="mt-3 text-[#2D5A27]/70 leading-relaxed pl-13">
                                     {review.comment}
                                 </p>
                             )}
 
-                            {/* Actions utilisateur */}
                             {review.user.id === session?.user?.id && (
                                 <div className="flex gap-3 mt-3 pl-13">
                                     <button
@@ -340,7 +345,7 @@ export default function ReviewSection({ filmId }: ReviewSectionProps) {
                                         Modifier
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(review.id)}
+                                        onClick={() => setDeleteModal(review.id)}
                                         className="text-xs text-red-400 hover:text-red-500 hover:underline"
                                     >
                                         Supprimer
@@ -355,6 +360,53 @@ export default function ReviewSection({ filmId }: ReviewSectionProps) {
                     <p className="text-[#2D5A27]/40 text-sm">
                         Aucun avis pour le moment. Soyez le premier à partager votre ressenti !
                     </p>
+                </div>
+            )}
+
+            {/* Modale suppression avis */}
+            {deleteModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setDeleteModal(null)}>
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        className="relative bg-[#FDFBF7] rounded-3xl shadow-2xl max-w-sm w-full p-8 animate-modal-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="text-center mb-6">
+                            <div className="flex flex-col items-center mx-auto mb-4">
+                                <div className="w-16 h-16 bg-[#2D5A27]/5 rounded-full flex items-center justify-center mb-2">
+                                    <span className="text-3xl" aria-hidden="true">🌳</span>
+                                </div>
+                                <div className="flex gap-1">
+                                    <span className="text-lg opacity-60" aria-hidden="true">🍃</span>
+                                    <span className="text-sm opacity-40" aria-hidden="true">🍃</span>
+                                </div>
+                            </div>
+                            <h3 className="font-display text-lg font-bold text-[#2D5A27] mb-2">
+                                Supprimer votre avis ?
+                            </h3>
+                            <p className="text-[#2D5A27]/60 text-sm">
+                                Cette action est irréversible.
+                            </p>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setDeleteModal(null)}
+                                className="flex-1 py-3 text-[#2D5A27]/60 hover:bg-[#2D5A27]/5 rounded-full transition-all font-medium"
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                disabled={deleteLoading}
+                                className="flex-1 py-3 bg-red-500 text-white rounded-full font-medium hover:bg-red-600 transition-all disabled:opacity-50"
+                            >
+                                {deleteLoading ? 'Suppression...' : 'Supprimer'}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </section>
